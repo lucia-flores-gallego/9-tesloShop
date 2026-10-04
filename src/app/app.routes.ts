@@ -1,8 +1,15 @@
 import { Routes } from '@angular/router';
+import { authGuard, publicGuard } from '@/auth/guards/authGuard';
 
 export const routes: Routes = [
-    {
-        path: '',
-        loadChildren: () => import('@/store-front/store-front.routes'),
-    },
+  {
+    path: 'auth',
+    canMatch: [publicGuard],
+    loadChildren: () => import('@/auth/authRoutes'),
+  },
+  {
+    path: '',
+    canMatch: [authGuard],
+    loadChildren: () => import('@/store-front/store-front.routes'),
+  },
 ];

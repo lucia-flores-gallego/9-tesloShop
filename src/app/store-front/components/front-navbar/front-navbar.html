@@ -9,7 +9,7 @@
         class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
         <li>
             <a 
-                routerLink="/gender/man" 
+                routerLink="/gender/men" 
                 routerLinkActive="text-info" 
                 class="btn btn-ghost"
                 >Hombre
@@ -17,7 +17,7 @@
         </li>
         <li>
             <a 
-                routerLink="/gender/woman" 
+                routerLink="/gender/women" 
                 routerLinkActive="text-info" 
                 class="btn btn-ghost"
                 >Mujer
@@ -25,7 +25,7 @@
         </li>
         <li>
             <a 
-                routerLink="/gender/kids" 
+                routerLink="/gender/kid" 
                 routerLinkActive="text-info" 
                 class="btn btn-ghost"
                 >Niños
@@ -44,7 +44,7 @@
     <ul class="menu menu-horizontal px-1">
       <li>
             <a 
-                routerLink="/gender/man" 
+                routerLink="/gender/men" 
                 routerLinkActive="text-info" 
                 class="btn btn-ghost"
                 >Hombre
@@ -52,7 +52,7 @@
         </li>
         <li>
             <a 
-                routerLink="/gender/woman" 
+                routerLink="/gender/women" 
                 routerLinkActive="text-info" 
                 class="btn btn-ghost"
                 >Mujer
@@ -60,7 +60,7 @@
         </li>
         <li>
             <a 
-                routerLink="/gender/kids" 
+                routerLink="/gender/kid" 
                 routerLinkActive="text-info" 
                 class="btn btn-ghost"
                 >Niños
@@ -69,6 +69,25 @@
     </ul>
   </div>
   <div class="navbar-end">
-    <a class="btn">Button</a>
+    @if (authService.authStatus() === 'authenticated') {
+      <div class="flex items-center gap-3">
+        <span class="text-sm font-medium">
+          {{ authService.user()?.name ?? 'Usuario' }}
+        </span>
+
+        <button class="btn btn-outline btn-sm" (click)="authService.logout()">
+          Logout
+        </button>
+      </div>
+    } @else {
+      <div class="flex gap-2">
+        <a routerLink="/auth/login" class="btn btn-secondary btn-sm">
+          Login
+        </a>
+        <a routerLink="/auth/register" class="btn btn-primary btn-sm">
+          Register
+        </a>
+      </div>
+    }
   </div>
 </div>
