@@ -1,24 +1,32 @@
+import { provideHttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { App } from '@/app';
+import { Router } from '@angular/router';
+import { AuthService } from '@/auth/services/authService';
 
-describe('App', () => {
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [App],
-    })
-      .compileComponents();
+describe('AuthService', () => {
+  let service: AuthService;
+  let router: jasmine.SpyObj<Router>;
+
+  beforeEach(() => {
+    router = jasmine.createSpyObj('Router', ['navigateByUrl']);
+
+    TestBed.configureTestingModule({
+      providers: [
+        AuthService,
+        provideHttpClient(),
+        { provide: Router, useValue: router },
+      ],
+    });
+
+    service = TestBed.inject(AuthService);
+    localStorage.clear();
   });
 
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(App);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
-  });
-
-  it('should render title', async () => {
-    const fixture = TestBed.createComponent(App);
-    await fixture.whenStable();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, tesloShop');
+  it('should return false without redirecting when the user has no token', (done) => {
+    service.checkStatus().subscribe((result) => {
+      expect(result).toBeFalse();
+      expect(router.navigateByUrl).not.toHaveBeenCalled();
+      done();
+    });
   });
 });

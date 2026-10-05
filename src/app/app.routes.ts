@@ -8,8 +8,11 @@ export const routes: Routes = [
     loadChildren: () => import('@/auth/authRoutes'),
   },
   {
+    path: 'admin',
+    loadChildren: () => import('./admin-dashboard/admin-dashboard.routes'),
+  },
+  {
     path: '',
-    canMatch: [authGuard],
     loadChildren: () => import('@/store-front/store-front.routes'),
   },
 ];
