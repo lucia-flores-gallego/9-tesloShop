@@ -1,0 +1,4 @@
+CADENA DE CONEXIÓN:
+configuar el backend para que se pegue a la BBDD
+postgresql://neondb_owner:npg_wa1UQojnWGt8@ep-lively-silence-za7fh5zg-pooler.c-2.eu-west-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+

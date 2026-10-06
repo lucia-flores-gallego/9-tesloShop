@@ -3,7 +3,7 @@ import { Product } from '@/products/interfaces/productInterface';
 import { ProductsService } from '@/products/services/productsService';
 import { FormErrorLabel } from '@/shared/components/form-error-label/form-error-label';
 import { FormUtils } from '@/utils/formUtils';
-import { Component, inject, input, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
@@ -23,6 +23,15 @@ export class ProductDetails implements OnInit {
   fb = inject(FormBuilder);
 
   wasSaved = signal(false);
+  tempImages = signal<string[]>([]);
+
+  imagesToCarousel = computed(() => {
+    const currentProductImages = 
+      [...this.product().images, ...this.tempImages()];
+    return currentProductImages;
+  });
+
+  imageFileList: FileList | undefined = undefined;
 
   productForm = this.fb.nonNullable.group({
     title: ['', Validators.required],
@@ -83,13 +92,13 @@ export class ProductDetails implements OnInit {
 
     if(this.product().id === 'new'){
       const product = await firstValueFrom(
-        this.productsService.createProduct(productLike)
+        this.productsService.createProduct(productLike, this.imageFileList)
       );
       //console.log('Producto creado');
       this.router.navigate(['/admin/products',product.id]);
     }else {
       await firstValueFrom(this.productsService
-        .updateProduct(this.product().id,productLike)
+        .updateProduct(this.product().id,productLike, this.imageFileList)
       );
     }
 
@@ -97,5 +106,13 @@ export class ProductDetails implements OnInit {
     setTimeout(() => {
       this.wasSaved.set(false);
     },3000);
+  }
+
+  onFilesChanged(event: Event){
+    const fileList = (event.target as HTMLInputElement).files;
+    this.imageFileList = fileList ?? undefined;
+    const imageURLs = Array.from(fileList ?? [])
+      .map(file =>{ return URL.createObjectURL(file)});
+    this.tempImages.set(imageURLs);
   }
 }
